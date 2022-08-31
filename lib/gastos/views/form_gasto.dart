@@ -1,9 +1,12 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mis_gastos/User/bloc/user_bloc.dart';
+import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/screens/gradient_back.dart';
+import 'package:mis_gastos/screens/widgets/button_color.dart';
 import 'package:mis_gastos/screens/widgets/text_form_field_custom.dart';
-import 'package:mis_gastos/screens/widgets/text_input.dart';
 import 'package:mis_gastos/screens/widgets/title_header.dart';
 
 class FormGasto extends StatelessWidget {
@@ -11,13 +14,15 @@ class FormGasto extends StatelessWidget {
   final _conceptoController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _fechaController = TextEditingController();
-  final _categoriaController = TextEditingController();
+
   final _importeController = TextEditingController();
+
+  late UserBloc blocUser;
 
   DateTime dateTime = DateTime.now();
   final picker = ImagePicker();
   FormGasto({Key? key}) : super(key: key);
-  late String categoria_tag = "Transporte";
+  String categoria_tag = "Transporte";
   final items_categoria = [
     'Transporte',
     'Eventual',
@@ -29,6 +34,7 @@ class FormGasto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    blocUser = BlocProvider.of(context);
     final hours = dateTime.hour.toString().padLeft(2, "0");
     final minute = dateTime.minute.toString().padLeft(2, "0");
     Future<DateTime?> pickDate() => showDatePicker(
@@ -120,6 +126,7 @@ class FormGasto extends StatelessWidget {
                       value: categoria_tag,
                       onChanged: (value) {
                         categoria_tag = value as String;
+                        (context as Element).markNeedsBuild();
                         // setState(() => categoria_tag = value as String);
                       },
                       icon: const Icon(
@@ -193,16 +200,25 @@ class FormGasto extends StatelessWidget {
                       inputType: TextInputType.number,
                       controller: _importeController),
                   const SizedBox(height: 15),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.purple,
-                          elevation: 4),
-                      onPressed: () {
-                        print("Botonazo al boton de guardar");
-                        print(categoria_tag);
-                      },
-                      child: const Text("Guardar"))
+                  Container(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: ButtonColor(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        text: "Registrar Gasto",
+                        color1: "#F19494",
+                        color2: "#E76868",
+                        onPressed: () => guardarGasto(
+                            GastoModel(
+                                concepto: _conceptoController.value.text,
+                                descripcion: _descripcionController.value.text,
+                                fecha: dateTime,
+                                importe:
+                                    double.parse(_importeController.value.text),
+                                categoria: categoria_tag),
+                            context),
+                        textColor: "#FFFFFF"),
+                  ),
                 ],
               ),
             ),
@@ -210,5 +226,12 @@ class FormGasto extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void guardarGasto(GastoModel gasto, BuildContext context) {
+    print(gasto.toMap());
+
+    //2. CloudFirestore se guarda los datos del gasto
+    blocUser.updateGastoData(gasto).whenComplete(() => Navigator.pop(context));
   }
 }
