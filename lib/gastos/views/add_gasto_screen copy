@@ -1,0 +1,243 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:mis_gastos/User/bloc/user_bloc.dart';
+import 'package:mis_gastos/gastos/model/gasto_model.dart';
+import 'package:mis_gastos/gastos/widget/dropdown_categoria.dart';
+
+import 'package:mis_gastos/screens/card_image.dart';
+import 'package:mis_gastos/screens/gradient_back.dart';
+
+import 'package:mis_gastos/screens/widgets/button_color.dart';
+import 'package:mis_gastos/screens/widgets/input_icon.dart';
+import 'package:mis_gastos/screens/widgets/text_input.dart';
+import 'package:mis_gastos/screens/widgets/title_header.dart';
+
+class AddGastoScreen extends StatefulWidget {
+  File? image;
+
+  AddGastoScreen({Key? key, this.image}) : super(key: key);
+  late UserBloc blocUser;
+  @override
+  State<AddGastoScreen> createState() => _AddGastoScreenState();
+}
+
+class _AddGastoScreenState extends State<AddGastoScreen> {
+  @override
+  DateTime dateTime = DateTime.now();
+  late String categoria_tag = "";
+  final items_categoria = [
+    'transporte',
+    'eventual',
+    'alimentacion',
+    'servicio',
+    'carro',
+    'otros_gastos',
+  ];
+
+  Widget build(BuildContext context) {
+    widget.blocUser = BlocProvider.of(context);
+    categoria_tag = "transporte";
+    final hours = dateTime.hour.toString().padLeft(2, "0");
+    final minute = dateTime.minute.toString().padLeft(2, "0");
+
+    final _controllerConcepto = TextEditingController();
+    final _controllerDescripcion = TextEditingController();
+    final _controllerImporte = TextEditingController();
+    final _controllerFoto = TextEditingController();
+    final _controllerUbicacion = TextEditingController();
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          GradientBack(
+            title: "",
+            height: 250,
+            color1: "#F19494",
+            color2: "#E76868",
+          ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.only(top: 25, left: 5),
+                child: SizedBox(
+                  height: 45,
+                  width: 45,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.keyboard_arrow_left,
+                      color: Colors.white,
+                      size: 45,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+              Flexible(
+                  child: Container(
+                padding: EdgeInsets.only(top: 40, left: 20, right: 10.0),
+                child: TitleHeader(title: "Nuevo gastos"),
+              )),
+            ],
+          ),
+           
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            alignment: Alignment.topCenter,
+            child: CardImage(
+              height: 350,
+              width: 250,
+              iconData: Icons.camera,
+              pathImage: widget.image?.path,
+              onPressed: () => print("botonazo a la camara"),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 400, bottom: 20),
+            child: ListView(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 20, top: 30),
+                  child: TextInput(
+                      hintText: "Concepto",
+                      inputType: TextInputType.text,
+                      maxLine: 1,
+                      controller: _controllerConcepto),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: TextInput(
+                      hintText: "Descripción",
+                      inputType: TextInputType.multiline,
+                      maxLine: 2,
+                      controller: _controllerDescripcion),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                final date = await pickDate();
+                                if (date == null) return;
+                                dateTime = date;
+                                // setState(() => dateTime = date);
+                              },
+                              child: Text(
+                                  '${dateTime.day}/ ${dateTime.month}/${dateTime.year}'))),
+                      SizedBox(width: 12),
+                      Expanded(
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                final time = await pickTime();
+                                if (time == null) return;
+                                final newDateTime = DateTime(
+                                    dateTime.year,
+                                    dateTime.month,
+                                    dateTime.day,
+                                    time.hour,
+                                    time.minute);
+                                dateTime = newDateTime;
+                                // setState(() => dateTime = newDateTime);
+                              },
+                              child: Text('$hours: $minute'))),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: TextInput(
+                      hintText: "Importe",
+                      inputType: TextInputType.number,
+                      maxLine: 1,
+                      controller: _controllerImporte),
+                ),
+                Row(
+                  children: [
+                    DropdownCategoria(),
+                    Container(
+                        margin: EdgeInsets.only(left: 20),
+                        child: Text(
+                          categoria_tag,
+                          style: TextStyle(
+                              fontSize: 26,
+                              fontFamily: "Lato",
+                              fontWeight: FontWeight.bold),
+                        ))
+                  ],
+                ),
+                Container(
+                    margin: EdgeInsets.only(top: 20),
+                    child: InputIcon(
+                      controller: _controllerUbicacion,
+                      hintText: "Ubicación",
+                      inputType: TextInputType.text,
+                      iconData: Icons.location_on,
+                    )),
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: ButtonColor(
+                      width: 1,
+                      height: 50,
+                      text: "Registrar Gasto",
+                      color1: "#F19494",
+                      color2: "#E76868",
+                      onPressed: () => guardarGasto(
+                          GastoModel(
+                              concepto: _controllerConcepto.value.text,
+                              descripcion: _controllerDescripcion.value.text,
+                              fecha: dateTime,
+                              importe:
+                                  double.parse(_controllerImporte.value.text),
+                              categoria: categoria_tag),
+                          context),
+                      textColor: "#FFFFFF"),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void guardarGasto(GastoModel gasto, BuildContext context) {
+    print(gasto);
+
+    //1. guardar la imagehn si existe al firestore
+    //// url
+
+    //2. CloudFirestore se guarda los datos del gasto
+    // este funciona !!
+    // widget.blocUser
+    //     .updateGastoData(gasto)
+    //     .whenComplete(() => Navigator.pop(context));
+  }
+
+  void clickCategoria(String categoria) {
+    categoria_tag = categoria;
+    // setState(() {
+    print(categoria_tag);
+    // });
+  }
+
+  DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
+      value: item,
+      child: Text(
+        item,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      ));
+
+  Future<DateTime?> pickDate() => showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2100));
+
+  Future<TimeOfDay?> pickTime() =>
+      showTimePicker(context: context, initialTime: TimeOfDay.now());
+}

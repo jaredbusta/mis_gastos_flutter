@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "439061140143",
+    "project_id": "mis-gastos-jb",
+    "storage_bucket": "mis-gastos-jb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439061140143:android:7c2487318e693cfcb73a5a",
+        "android_client_info": {
+          "package_name": "com.jb.mis_gastos.mis_gastos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "439061140143-k0orkmagakochli392qj48ke85q9b9cq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jb.mis_gastos.mis_gastos",
+            "certificate_hash": "8c1961bb2853c284d4a693f66ceebc1152ba5aed"
+          }
+        },
+        {
+          "client_id": "439061140143-91ju26t5h5m3ehevfnsnh8h8hq09io5k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAJdborolaw2jQI8Rr4lNBv8cy0kUVd20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "439061140143-91ju26t5h5m3ehevfnsnh8h8hq09io5k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "439061140143-81a1i6dvcipeqc19uqhjq0h2nji0cq7m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterVscDemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
