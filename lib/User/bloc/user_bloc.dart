@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:mis_gastos/User/model/user_model.dart';
@@ -33,6 +35,8 @@ class UserBloc extends Bloc {
   // guarda gastos del usuario
   Future<void> updateGastoData(GastoModel gasto) =>
       _cloudFirestoreRepositoryGastos.updateGastoDataFirestore(gasto);
+  Future<void> getMisGastos() => _cloudFirestoreRepositoryGastos.getMisGastos();
+
   @override
   void dispose() {
     // TODO: implement dispose

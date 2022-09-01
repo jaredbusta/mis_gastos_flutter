@@ -1,8 +1,10 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_vsc_demo/mis_gastos/gastos/widget/gasto.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class GastoRepository {
-  // final db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   // guarda_gasto() async {
   //   try {
@@ -19,10 +21,10 @@ class GastoRepository {
   //   }
   // }
 
-  // mis_gastos() async {
-  //   QuerySnapshot data = await db.collection("gastos").get();
-  //   final _data = data.docs.map((docs) => docs.data()).toList();
+  mis_gastos() async {
+    QuerySnapshot data = await db.collection("gastos").get();
+    final _data = data.docs.map((docs) => docs.data()).toList();
 
-  //   return _data;
-  // }
+    return _data;
+  }
 }

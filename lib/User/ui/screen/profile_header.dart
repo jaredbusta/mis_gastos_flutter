@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:mis_gastos/User/bloc/user_bloc.dart';
@@ -7,27 +8,56 @@ import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/utils/util.dart';
 
 // ignore: must_be_immutable
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
+  @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
   late UserBloc blocUser;
+
   late UserModel user;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    blocUser = BlocProvider.of<UserBloc>(context);
+    blocUser = BlocProvider.of(context);
+    // print(blocUser.authStatus);
+    return _handleCurrentSession();
 
+    // return StreamBuilder(
+    //     stream: blocUser.authStatus,
+    //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //       print(blocUser.authStatus);
+    //       switch (snapshot.connectionState) {
+    //         case ConnectionState.none:
+    //           return Center(child: CircularProgressIndicator());
+    //         case ConnectionState.waiting:
+    //           return Center(child: CircularProgressIndicator());
+    //         case ConnectionState.active:
+    //           return showProfileData(snapshot);
+    //         case ConnectionState.done:
+    //           return showProfileData(snapshot);
+    //       }
+    //     });
+  }
+
+  Widget _handleCurrentSession() {
     return StreamBuilder(
-        stream: blocUser.streamFirebase,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return CircularProgressIndicator();
-            case ConnectionState.waiting:
-              return CircularProgressIndicator();
-            case ConnectionState.active:
-              return showProfileData(snapshot);
-            case ConnectionState.done:
-              return showProfileData(snapshot);
-          }
-        });
+      stream: blocUser.authStatus,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        // snapshot contiene el objeto user
+        if (!snapshot.hasData) {
+          return waiting_data();
+        } else {
+          return showProfileData(snapshot);
+        }
+      },
+    );
   }
 
   Widget showProfileData(AsyncSnapshot snapshot) {
@@ -85,5 +115,25 @@ class ProfileHeader extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class waiting_data extends StatelessWidget {
+  const waiting_data({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Esperando data"),
+        SizedBox(
+          height: 20,
+        ),
+        CircularProgressIndicator()
+      ],
+    );
   }
 }

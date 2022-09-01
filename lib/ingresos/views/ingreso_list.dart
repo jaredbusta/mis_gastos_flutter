@@ -43,6 +43,7 @@ class IngresoList extends StatelessWidget {
             IngresoCard("15 jul 22", "nomina", "8,031.00", 5),
             IngresoCard("30 jul 22", "nomina", "8,036.00", 5),
             IngresoCard("15 ago 22", "nomina", "8,036.00", 5),
+            IngresoCard("31 ago 22", "nomina", "8,036.00", 5),
           ],
         ),
       )

@@ -6,4 +6,5 @@ class GastosCloudFirestoreRepository {
 
   Future<void> updateGastoDataFirestore(GastoModel gasto) =>
       _cloudFirestoreApi.updateGastoDataFirestore(gasto);
+  Future<void> getMisGastos() => _cloudFirestoreApi.getMisGastos();
 }

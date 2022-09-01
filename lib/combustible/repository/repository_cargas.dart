@@ -13,8 +13,7 @@ class RepositoryCargas {
         110, UnidadDistacia.millas));
     lista.add(RegistroCargaModel("15/jul", "San Javier", 20, 431.00, "Magna",
         120, UnidadDistacia.millas));
-    lista.add(RegistroCargaModel("02/ago", "Esta no existe", 40, 862.00,
-        "Magna [demo]", 120, UnidadDistacia.millas));
+
     return lista;
   }
 

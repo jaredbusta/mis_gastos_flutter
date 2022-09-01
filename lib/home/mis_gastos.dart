@@ -19,7 +19,7 @@ class _MisGastosState extends State<MisGastos> {
   final List<Widget> widgetsChildren = [
     const Home(),
     IngresoList(),
-    const ListaGastos(),
+    ListaGastos(),
     ListaCombustible(),
     ProfileHeader()
   ];

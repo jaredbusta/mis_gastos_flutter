@@ -24,4 +24,10 @@ class CloudFirestoreApi {
       print("No hay usuario logeado ...");
     }
   }
+
+  Future<void> getMisGastos() async {
+    QuerySnapshot data = await this._db.collection("gastos").get();
+    final _data = data.docs.map((docs) => docs.data()).toList();
+    print(_data);
+  }
 }
