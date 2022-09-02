@@ -25,9 +25,26 @@ class CloudFirestoreApi {
     }
   }
 
-  Future<void> getMisGastos() async {
-    QuerySnapshot data = await this._db.collection("gastos").get();
-    final _data = data.docs.map((docs) => docs.data()).toList();
-    print(_data);
+  Future<List<GastoModel>> getMisGastos() async {
+    // QuerySnapshot data = await this._db.collection("gastos").get();
+    // var _data = data.docs.map((docs) => docs.data()).toList();
+    // print(_data);
+
+    // var start = DateTime(2022, 9, 1);
+    // var end = DateTime(2022, 9, 2);
+    // print(start);
+    // print(end);
+
+    List<GastoModel> gastos = [];
+    try {
+      final docRef = this._db.collection("gastos").doc();
+      docRef.get().then((value) {
+        final data = value.data() as Map<String, dynamic>;
+        print(data);
+      }, onError: (e) => print(e));
+    } catch (e) {
+      print(e);
+    }
+    return gastos;
   }
 }
