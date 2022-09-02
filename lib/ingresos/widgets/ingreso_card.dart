@@ -16,6 +16,33 @@ class IngresoCard extends StatelessWidget {
   }
 
   Card ingresoCard() {
+    var detalle = Container(
+      padding: const EdgeInsets.only(bottom: 20.0, left: 20.0),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 6, bottom: 6, left: 10, right: 10),
+            decoration: BoxDecoration(
+                color: Colors.black12, borderRadius: BorderRadius.circular(20)),
+            child: Text(
+              fecha,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const Text(" "),
+          Flexible(
+            child: Text(
+              concepto,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -41,27 +68,7 @@ class IngresoCard extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0, left: 100.0),
-            child: Row(
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  fecha,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Text("     "),
-                Text(
-                  concepto,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          )
+          detalle
         ],
       ),
     );
