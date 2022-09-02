@@ -49,12 +49,18 @@ class Gasto extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 20.0, left: 20.0),
             child: Column(
               children: [
-                Text(
-                  this.fecha,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Container(
+                    padding:
+                        EdgeInsets.only(top: 6, bottom: 6, left: 20, right: 20),
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(25)),
+                    child: Text(
+                      this.fecha,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
                 Text(
                   this.concepto,
                   style: TextStyle(
