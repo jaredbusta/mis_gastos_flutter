@@ -17,93 +17,8 @@ class ListaGastos extends StatelessWidget {
   Widget build(BuildContext context) {
     userBloc = BlocProvider.of<UserBloc>(context);
     // userBloc.getMisGastos();
-    return stack(context);
-  }
 
-  Widget showGastosData(AsyncSnapshot snapshot, BuildContext context) {
-    if (!snapshot.hasData || snapshot.hasError) {
-      print("No logueado");
-      return Stack(
-        children: [
-          GradientBack(
-              title: "Mis gastos",
-              height: 150,
-              color1: "#F75454",
-              color2: "#E33131"),
-          Flexible(
-              child: Container(
-            padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
-            child: TitleHeader(title: "Mis gastos"),
-          )),
-          Container(
-            padding: const EdgeInsets.only(top: 140),
-            child: ListView(
-              children: [Gasto("9.00", "01 ago", "camioncito ")],
-            ),
-          ),
-          Container(
-            alignment: Alignment(0.9, -0.6),
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CirculeButton(
-                    false, Icons.upload_file, 32, Util.color("#FFFFFF"),
-                    onPressed: () => {goToImportaCSV(context)},
-                    iconColor: Util.color("#000000"))),
-          ),
-          Container(
-            alignment: Alignment(0.93, 0.9),
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CirculeButton(
-                    false, Icons.add, 32, Util.color("#FFFFFF"),
-                    onPressed: () => {goToForm(context)},
-                    iconColor: Util.color("#000000"))),
-          ),
-        ],
-      );
-    } else
-      return Stack(
-        children: [
-          GradientBack(
-              title: "Mis gastos",
-              height: 150,
-              color1: "#F75454",
-              color2: "#E33131"),
-          Flexible(
-              child: Container(
-            padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
-            child: TitleHeader(title: "Mis gastos"),
-          )),
-          Container(
-            padding: const EdgeInsets.only(top: 140),
-            child: ListView(
-              children: [Gasto("9.00", "01 ago", "camioncito ")],
-            ),
-          ),
-          Container(
-            alignment: Alignment(0.9, -0.6),
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CirculeButton(
-                    false, Icons.upload_file, 32, Util.color("#FFFFFF"),
-                    onPressed: () => {goToImportaCSV(context)},
-                    iconColor: Util.color("#000000"))),
-          ),
-          Container(
-            alignment: Alignment(0.93, 0.9),
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CirculeButton(
-                    false, Icons.add, 32, Util.color("#FFFFFF"),
-                    onPressed: () => {goToForm(context)},
-                    iconColor: Util.color("#000000"))),
-          ),
-        ],
-      );
+    return stack(context);
   }
 
   stack(BuildContext context) {
@@ -115,15 +30,11 @@ class ListaGastos extends StatelessWidget {
             color1: "#CFCFCF",
             color2: "#F3F3F3"),
         GradientBack(
-            title: "Mis gastos",
-            height: 150,
-            color1: "#F75454",
-            color2: "#E33131"),
-        Flexible(
-            child: Container(
-          padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
-          child: TitleHeader(title: "Mis gastos"),
-        )),
+            title: "", height: 150, color1: "#F75454", color2: "#E33131"),
+        // Container(
+        //   padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
+        //   child: TitleHeader(title: "Mis gastos"),
+        // ),
         Container(
           padding: const EdgeInsets.only(top: 140),
           child: ListView(

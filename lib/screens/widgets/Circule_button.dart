@@ -19,7 +19,7 @@ class CirculeButton extends StatefulWidget {
 class _CirculeButtonState extends State<CirculeButton> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Container(
         child: FloatingActionButton(
       backgroundColor: Color(widget.color),
       mini: widget.mini,
