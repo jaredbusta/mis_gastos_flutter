@@ -17,16 +17,15 @@ class IngresoList extends StatelessWidget {
         color1: "#4268D3",
         color2: "#584CD1",
       ),
-      Flexible(
-          child: Container(
-        padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
+      Container(
+        padding: EdgeInsets.only(top: 70, left: 100),
         child: TitleHeader(title: "Mis ingresos"),
-      )),
+      ),
       Container(
         padding: const EdgeInsets.only(top: 150),
         child: ListView(
           children: [
-            IngresoCard("17 en 22", "nomina", "8,036.00", 2),
+            IngresoCard("17 ene 22", "nomina", "8,036.00", 2),
             IngresoCard("13 ene 22", "nomina", "8,036.00", 3),
             IngresoCard("15 feb 22", "nomina", "8,036.00", 4),
             IngresoCard("28 feb 22", "nomina", "8,036.00", 5),
