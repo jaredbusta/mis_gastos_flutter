@@ -109,7 +109,11 @@ class ListaGastos extends StatelessWidget {
   stack(BuildContext context) {
     return Stack(
       children: [
-        // GastosAppBar(),
+        GradientBack(
+            title: " ",
+            height: MediaQuery.of(context).size.height,
+            color1: "#CFCFCF",
+            color2: "#F3F3F3"),
         GradientBack(
             title: "Mis gastos",
             height: 150,
@@ -123,6 +127,7 @@ class ListaGastos extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(top: 140),
           child: ListView(
+            padding: EdgeInsets.all(20),
             children: [
               Gasto("9.00", "01 ago", "camioncito "),
               Gasto("275.00", "02 ago", "arroz, pasta, puré, desodorante x4"),
@@ -165,6 +170,7 @@ class ListaGastos extends StatelessWidget {
               Gasto("100.00", "26 ago", "Queso y carne LEY"),
               Gasto("100.00", "26 ago", "Gas LP"),
               Gasto("89.00", "31 ago", "pizza lirusisar"),
+              Gasto("287.00", "1 sep", "Recibo del agua"),
             ],
           ),
         ),
