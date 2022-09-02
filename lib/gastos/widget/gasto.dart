@@ -8,16 +8,24 @@ class Gasto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return gastoCard();
+    return Container(
+      padding: EdgeInsets.only(bottom: 10),
+      child: gastoCard(),
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(blurRadius: 15, color: Colors.black26)],
+      ),
+    );
   }
 
   Card gastoCard() {
     return new Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      elevation: 15,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: 26),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
