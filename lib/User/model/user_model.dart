@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class UserModel {
   final String? uid;
-  final String nombre;
-  final String email;
-  final String photoUrl;
+  final String? nombre;
+  final String? email;
+  final String? photoUrl;
 
   UserModel(
       {Key? key,

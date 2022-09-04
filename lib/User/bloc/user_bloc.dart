@@ -1,11 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+
 import 'package:mis_gastos/User/model/user_model.dart';
 import 'package:mis_gastos/User/repository/cloud_firestore_repository.dart';
-import 'package:mis_gastos/gastos/repository/gastos_cloud_firestore_repository.dart';
 import 'package:mis_gastos/gastos/model/gasto_model.dart';
+import 'package:mis_gastos/gastos/repository/demo_repository_gastos.dart';
+import 'package:mis_gastos/gastos/repository/gastos_cloud_firestore_repository.dart';
 
 import '../repository/auth_repository.dart';
 
@@ -13,8 +18,17 @@ class UserBloc extends Bloc {
   final _auth_repository = AuthRepository();
   // uso de Stream
   Stream<User?> streamFirebase = FirebaseAuth.instance.authStateChanges();
+  // Stream<User?> get authStatus => streamFirebase;
 
-  Stream<User?> get authStatus => streamFirebase;
+  Stream<UserModel> get authStatus {
+    return FirebaseAuth.instance.authStateChanges().map((user) {
+      return UserModel(
+          uid: user!.uid,
+          email: user.email,
+          nombre: user.displayName,
+          photoUrl: user.photoURL);
+    });
+  }
 
   // Casos de uso del objeto user
   //1.- signIn Google
@@ -29,13 +43,17 @@ class UserBloc extends Bloc {
   //2. Registrar usuario en BD
   final _cloudFirestoreRepository = CloudFirestoreRepository();
   final _cloudFirestoreRepositoryGastos = GastosCloudFirestoreRepository();
+
+  final _demoRepositoryGasto = DemoRepositoryGastos();
   void updateUserDataFirestore(UserModel user) =>
       _cloudFirestoreRepository.updateUserDataFirestore(user);
 
   // guarda gastos del usuario
   Future<void> updateGastoData(GastoModel gasto) =>
       _cloudFirestoreRepositoryGastos.updateGastoDataFirestore(gasto);
-  Future<void> getMisGastos() => _cloudFirestoreRepositoryGastos.getMisGastos();
+  Stream<QuerySnapshot> getMisGastos(start, end, category) =>
+      _cloudFirestoreRepositoryGastos.getMisGastos(start, end, category);
+  // List getMisGastos() => _demoRepositoryGasto.getMisGastos();
 
   @override
   void dispose() {

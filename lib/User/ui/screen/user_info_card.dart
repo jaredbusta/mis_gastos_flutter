@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mis_gastos/User/model/user_model.dart';
 
-class UserInfo extends StatelessWidget {
+class UserInfoCard extends StatelessWidget {
   UserModel user;
-  UserInfo({Key? key, required this.user});
+  UserInfoCard({Key? key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +16,10 @@ class UserInfo extends StatelessWidget {
               color: Colors.white, width: 2, style: BorderStyle.solid),
           shape: BoxShape.circle,
           image: DecorationImage(
-              fit: BoxFit.cover, image: NetworkImage(user.photoUrl))),
+              fit: BoxFit.cover, image: NetworkImage(user.photoUrl ?? ''))),
     );
     return Column(
-      children: [user_photo, Text(user.nombre), Text(user.email)],
+      children: [user_photo, Text(user.nombre ?? ''), Text(user.email ?? '')],
     );
   }
 }

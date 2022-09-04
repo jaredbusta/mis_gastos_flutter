@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:mis_gastos/User/bloc/user_bloc.dart';
 import 'package:mis_gastos/User/model/user_model.dart';
-import 'package:mis_gastos/User/ui/screen/user_info.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/utils/util.dart';
+import 'user_info_card.dart';
 
 // ignore: must_be_immutable
 class ProfileHeader extends StatefulWidget {
@@ -16,7 +17,7 @@ class ProfileHeader extends StatefulWidget {
 class _ProfileHeaderState extends State<ProfileHeader> {
   late UserBloc blocUser;
 
-  late UserModel user;
+  late UserModel user_model;
 
   @override
   void dispose() {
@@ -24,26 +25,43 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Stream<User?> streamFirebase = FirebaseAuth.instance.authStateChanges();
+    streamFirebase.listen((user) {
+      print("${user?.uid}");
+      setState(() {
+        user_model = UserModel(
+            nombre: user?.displayName,
+            email: user?.email,
+            photoUrl: user?.photoURL);
+        print(user_model.nombre);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     blocUser = BlocProvider.of(context);
-    // print(blocUser.authStatus);
-    return _handleCurrentSession();
+    // print(user_model.toString());
+    // print(user_model?.nombre ?? "todavia no carga el usuario");
+    // return _handleCurrentSession();
 
-    // return StreamBuilder(
-    //     stream: blocUser.authStatus,
-    //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-    //       print(blocUser.authStatus);
-    //       switch (snapshot.connectionState) {
-    //         case ConnectionState.none:
-    //           return Center(child: CircularProgressIndicator());
-    //         case ConnectionState.waiting:
-    //           return Center(child: CircularProgressIndicator());
-    //         case ConnectionState.active:
-    //           return showProfileData(snapshot);
-    //         case ConnectionState.done:
-    //           return showProfileData(snapshot);
-    //       }
-    //     });
+    return StreamBuilder(
+        stream: blocUser.authStatus,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print(blocUser.authStatus);
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Center(child: CircularProgressIndicator());
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+            case ConnectionState.active:
+              return showProfileData(snapshot);
+            case ConnectionState.done:
+              return showProfileData(snapshot);
+          }
+        });
   }
 
   Widget _handleCurrentSession() {
@@ -52,7 +70,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // snapshot contiene el objeto user
         if (!snapshot.hasData) {
-          return waiting_data();
+          return loadingData();
         } else {
           return showProfileData(snapshot);
         }
@@ -73,15 +91,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
       );
     } else {
-      print("Logeado");
-      print(snapshot.data.displayName);
-      print(snapshot.data.email);
-      print(snapshot.data.photoURL);
-      // print(snapshot.data.photoURL);
-      user = UserModel(
-          nombre: snapshot.data.displayName,
-          email: snapshot.data.email,
-          photoUrl: snapshot.data.photoURL);
       final title = Text(
         'Profile',
         style: TextStyle(
@@ -97,9 +106,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             Row(
               children: <Widget>[title],
             ),
-            UserInfo(
-              user: user,
-            ),
+            UserInfoCard(user: user_model),
             CirculeButton(
               false,
               Icons.exit_to_app,
@@ -116,15 +123,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       );
     }
   }
-}
 
-class waiting_data extends StatelessWidget {
-  const waiting_data({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget loadingData() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -132,7 +132,12 @@ class waiting_data extends StatelessWidget {
         SizedBox(
           height: 20,
         ),
-        CircularProgressIndicator()
+        CircularProgressIndicator(),
+        ElevatedButton(
+            onPressed: () {
+              blocUser.signOut();
+            },
+            child: Text("SingOUT bais"))
       ],
     );
   }
