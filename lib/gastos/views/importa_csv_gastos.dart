@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mis_gastos/gastos/widget/gasto.dart';
+import 'package:intl/intl.dart';
+import 'package:mis_gastos/gastos/model/gasto_model.dart';
+import 'package:mis_gastos/gastos/widget/gasto_card.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/screens/widgets/title_header.dart';
 import 'package:mis_gastos/utils/util.dart';
@@ -10,6 +12,7 @@ class ImportaCSVGastos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat("##,##0.00", "en_US");
     return Scaffold(
       body: Stack(
         children: [
@@ -43,7 +46,13 @@ class ImportaCSVGastos extends StatelessWidget {
             padding: const EdgeInsets.only(top: 140),
             child: ListView(
               children: [
-                Gasto("9.00", "01 ago", "camioncito "),
+                GastoCard(GastoModel(
+                    concepto: "Prueba",
+                    descripcion:
+                        "este es un texto regularmente grande, mas grande mas grande maaaaaaaaaaaaaaaaaaaaaaaaaaas grandeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!",
+                    fecha: DateTime.now(),
+                    importe: 10000,
+                    categoria: "Alimentacion")),
               ],
             ),
           ),

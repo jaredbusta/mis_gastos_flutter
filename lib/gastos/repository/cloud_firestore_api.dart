@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mis_gastos/gastos/model/gasto_model.dart';
+import 'package:mis_gastos/gastos/widget/gasto_card.dart';
 import '../../User/repository/cloud_firestore_api.dart';
 
 class CloudFirestoreApi {
@@ -25,26 +27,52 @@ class CloudFirestoreApi {
     }
   }
 
-  Future<List<GastoModel>> getMisGastos() async {
-    // QuerySnapshot data = await this._db.collection("gastos").get();
-    // var _data = data.docs.map((docs) => docs.data()).toList();
-    // print(_data);
+  Stream<QuerySnapshot> getMisGastos(
+      {Key? key, required start, required end, category}) {
+    var user = _auth.currentUser;
+    final ref = this
+        ._db
+        .collection(GASTO_TABLE)
+        // .where("fecha", isGreaterThanOrEqualTo: start)
+        // .where("fecha", isLessThanOrEqualTo: end)
+        // .where("owner", isEqualTo: "users/${user!.uid}")
+        .where("owner",
+            isEqualTo: FirebaseFirestore.instance.doc("users/${user!.uid}"));
+    // .orderBy("fecha", descending: true);
 
-    // var start = DateTime(2022, 9, 1);
-    // var end = DateTime(2022, 9, 2);
-    // print(start);
-    // print(end);
-
-    List<GastoModel> gastos = [];
-    try {
-      final docRef = this._db.collection("gastos").doc();
-      docRef.get().then((value) {
-        final data = value.data() as Map<String, dynamic>;
-        print(data);
-      }, onError: (e) => print(e));
-    } catch (e) {
-      print(e);
+    if (category.toString().length > 0) {
+      print({start, end, category});
+      ref.where("categoria", isEqualTo: category);
     }
-    return gastos;
+    var data = ref.snapshots();
+
+    // data.forEach((field) {
+    //   field.docs.asMap().forEach((index, data) {
+    //     var concepto = data.get("concepto");
+    //     print("concepto");
+    //     // print(index);
+    //     // var productName = field.docs[index]["concepto"];
+    //     // print(productName);
+    //   });
+    // });
+    // print("si llega hasta aqui");
+
+    return ref.snapshots(includeMetadataChanges: true);
+  }
+
+  List<GastoCard> buildMyGastosCard(List<DocumentSnapshot> gastosListSnapshot) {
+    List<GastoCard> lista = <GastoCard>[];
+    gastosListSnapshot.forEach((p) {
+      print(p.data());
+      // GastoModel model = GastoModel(
+      //     concepto: p.get("concepto"),
+      //     descripcion: p.get("descripcion"),
+      //     fecha: p.get("fecha"),
+      //     importe: p.get("importe"),
+      //     categoria: p.get("categoria"));
+      // lista.add(GastoCard(model));
+    });
+
+    return lista;
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:mis_gastos/User/bloc/user_bloc.dart';
@@ -7,18 +6,25 @@ import 'package:mis_gastos/gastos/views/importa_csv_gastos.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/screens/widgets/title_header.dart';
 import 'package:mis_gastos/utils/util.dart';
-import '../widget/gasto.dart';
+import '../widget/gasto_card.dart';
 import '../../screens/gradient_back.dart';
 
 class ListaGastos extends StatelessWidget {
   late UserBloc userBloc;
+  List<GastoCard> widgetCargas = [];
   ListaGastos({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     userBloc = BlocProvider.of<UserBloc>(context);
-    // userBloc.getMisGastos();
-
+    userBloc.getMisGastosStream(
+        DateTime(2022, 9, 2), DateTime.now(), "Transporte");
     return stack(context);
+  }
+
+  Widget loading() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 
   stack(BuildContext context) {
@@ -31,61 +37,42 @@ class ListaGastos extends StatelessWidget {
             color2: "#F3F3F3"),
         GradientBack(
             title: "", height: 150, color1: "#F75454", color2: "#E33131"),
-        // Container(
-        //   padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
-        //   child: TitleHeader(title: "Mis gastos"),
-        // ),
+        Container(
+          padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
+          child: TitleHeader(title: "Mis gastos"),
+        ),
         Container(
           padding: const EdgeInsets.only(top: 140),
-          child: ListView(
-            padding: EdgeInsets.all(20),
-            children: [
-              Gasto("9.00", "01 ago 22", "camioncito "),
-              Gasto(
-                  "275.00", "02 ago 22", "arroz, pasta, puré, desodorante x4"),
-              Gasto("89.00", "03 ago 22", "pizza del lirusisar"),
-              Gasto("9.00", "04 ago 22", "camioncito"),
-              Gasto("9.00", "05 ago 22", "camioncito"),
-              Gasto("9.00", "05 ago 22", "camioncito"),
-              Gasto("150.00", "06 ago 22", "bongles con fers"),
-              Gasto("16.65", "07 ago 22", "tomate"),
-              Gasto("280.00", "07 ago 22", "verduras del mercado"),
-              Gasto("102.00", "07 ago 22", "pan y huevos del soriana"),
-              Gasto("20.00", "07 ago 22", "2 garrafones de agua"),
-              Gasto("9.00", "08 ago 22", "camioncito"),
-              Gasto("9.00", "09 ago 22", "camioncito"),
-              Gasto("23.00", "09 ago 22", "galletas emperador chocolate"),
-              Gasto("9.00", "10 ago 22", "camioncito"),
-              Gasto("9.00", "11 ago 22", "camioncito"),
-              Gasto("9.00", "12 ago 22", "camioncito"),
-              Gasto("50.00", "12 ago 22", "despedida de Darío"),
-              Gasto("150.00", "12 ago 22", "cumpleaños de abue"),
-              Gasto("459.00", "12 ago 22", "Internet"),
-              Gasto("374.27", "13 ago 22", "Mandado del ley"),
-              Gasto("9.00", "15 ago 22", "camioncito"),
-              Gasto("9.00", "16 ago 22", "camioncito"),
-              Gasto("9.00", "17 ago 22", "camioncito"),
-              Gasto("36.00", "17 ago 22", "tortillas de harina de la tienda"),
-              Gasto("9.00", "18 ago 22", "camioncito"),
-              Gasto("9.00", "19 ago 22", "camioncito"),
-              Gasto("701.00", "20 ago 22", "CFE"),
-              Gasto("78.00", "20 ago 22", "3 kg papa"),
-              Gasto("216.78", "20 ago 22", "Verdudas del mercado"),
-              Gasto("9.00", "22 ago 22", "camioncito"),
-              Gasto("9.00", "23 ago 22", "camioncito"),
-              Gasto("9.00", "24 ago 22", "camioncito"),
-              Gasto("100.00", "24 ago 22", "comida china"),
-              Gasto("200.00", "25 ago 22", "Mecanico"),
-              Gasto("215.00", "25 ago 22", "Ensalada"),
-              Gasto("9.00", "25 ago 22", "camioncito"),
-              Gasto("9.00", "26 ago 22", "camioncito"),
-              Gasto("100.00", "26 ago 22", "Queso y carne LEY"),
-              Gasto("100.00", "26 ago 22", "Gas LP"),
-              Gasto("89.00", "31 ago 22", "pizza lirusisar"),
-              Gasto("287.00", "1 sep 22", "Recibo del agua"),
-            ],
+          child: StreamBuilder(
+            stream: userBloc.getMisGastos(
+                DateTime(2022, 9, 2), DateTime.now(), "Transporte"),
+            builder: (context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.active:
+                  print("listaGastos->streamBuilder()->Dentro de active");
+
+                  print(snapshot.data.toString());
+                  // userBloc.listaGastos(snapshot.data);
+                  // print(snapshot());
+                  break;
+                case ConnectionState.done:
+                  print("Dentro de done");
+                  print(snapshot.data);
+                  break;
+                case ConnectionState.none:
+                  return loading();
+                case ConnectionState.waiting:
+                  return loading();
+              }
+              print(snapshot.data);
+              return Center(child: Text("Ya estan listos los datos"));
+            },
           ),
         ),
+        // Container(
+        //   padding: const EdgeInsets.only(top: 140),
+        //   child: ListView(padding: EdgeInsets.all(20), children: widgetCargas),
+        // ),
         Container(
           alignment: Alignment(0.9, -0.6),
           child: SizedBox(
@@ -110,7 +97,6 @@ class ListaGastos extends StatelessWidget {
   }
 
   goToForm(BuildContext context) {
-    File? image;
     showDialog(context: context, builder: (context) => FormGasto());
 
     // Navigator.push(

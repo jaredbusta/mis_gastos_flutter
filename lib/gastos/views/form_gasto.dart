@@ -13,7 +13,6 @@ class FormGasto extends StatelessWidget {
   final _key = GlobalKey<FormState>();
   final _conceptoController = TextEditingController();
   final _descripcionController = TextEditingController();
-  final _fechaController = TextEditingController();
 
   final _importeController = TextEditingController();
 
@@ -53,6 +52,7 @@ class FormGasto extends StatelessWidget {
         child: ListView(
           children: [
             Form(
+              key: _key,
               child: Column(
                 children: [
                   Stack(
@@ -63,12 +63,11 @@ class FormGasto extends StatelessWidget {
                         color1: "#F19494",
                         color2: "#E76868",
                       ),
-                      Flexible(
-                          child: Container(
+                      Container(
                         padding:
                             EdgeInsets.only(top: 10, left: 20, right: 10.0),
                         child: TitleHeader(title: "Nuevo gasto"),
-                      )),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),

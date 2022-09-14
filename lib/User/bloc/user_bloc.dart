@@ -11,6 +11,7 @@ import 'package:mis_gastos/User/repository/cloud_firestore_repository.dart';
 import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/gastos/repository/demo_repository_gastos.dart';
 import 'package:mis_gastos/gastos/repository/gastos_cloud_firestore_repository.dart';
+import 'package:mis_gastos/gastos/widget/gasto_card.dart';
 
 import '../repository/auth_repository.dart';
 
@@ -51,6 +52,28 @@ class UserBloc extends Bloc {
   // guarda gastos del usuario
   Future<void> updateGastoData(GastoModel gasto) =>
       _cloudFirestoreRepositoryGastos.updateGastoDataFirestore(gasto);
+
+// funcions demo antes de limpiar
+  void getMisGastosStream(start, end, category) {
+    // FirebaseFirestore.instance
+    //     .collection("gastos")
+    //     .where("fecha", isGreaterThanOrEqualTo: start)
+    //     .where("fecha", isLessThanOrEqualTo: end)
+    //     // .where("owner", isEqualTo: "users/${user!.uid}")
+    //     // .where("owner", isEqualTo: FirebaseFirestore.instance.doc("users/${user!.uid}"))
+    //     .orderBy("fecha", descending: true).
+    var data = FirebaseFirestore.instance
+        .collection("gastos")
+        .where("owner", isEqualTo: "users/L5mzpTMBr2RgwgNLw7473lvZiS63")
+        .get()
+        .then((value) => print(value));
+
+    print(data);
+  }
+
+  List<GastoCard> listaGastos(List<DocumentSnapshot> gastosSnapshot) =>
+      _cloudFirestoreRepositoryGastos.buildMyGastosCard(gastosSnapshot);
+
   Stream<QuerySnapshot> getMisGastos(start, end, category) =>
       _cloudFirestoreRepositoryGastos.getMisGastos(start, end, category);
   // List getMisGastos() => _demoRepositoryGasto.getMisGastos();
