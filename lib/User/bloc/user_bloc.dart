@@ -62,13 +62,16 @@ class UserBloc extends Bloc {
     //     // .where("owner", isEqualTo: "users/${user!.uid}")
     //     // .where("owner", isEqualTo: FirebaseFirestore.instance.doc("users/${user!.uid}"))
     //     .orderBy("fecha", descending: true).
+
+    // indice de fecha en proceso de generar
     var data = FirebaseFirestore.instance
         .collection("gastos")
         .where("owner", isEqualTo: "users/L5mzpTMBr2RgwgNLw7473lvZiS63")
+        .where("categoria", isEqualTo: category)
+        .where("fecha", isGreaterThanOrEqualTo: start)
+        .where("fecha", isLessThanOrEqualTo: end)
         .get()
-        .then((value) => print(value));
-
-    print(data);
+        .then((value) {});
   }
 
   List<GastoCard> listaGastos(List<DocumentSnapshot> gastosSnapshot) =>

@@ -63,7 +63,8 @@ class GastoCard extends StatelessWidget {
                             color: Colors.black12,
                             borderRadius: BorderRadius.circular(25)),
                         child: Text(
-                          Jiffy(this.model.fecha).yMMMd,
+                          Jiffy(this.model.fecha).yMMMdjm,
+                          // Jiffy(this.model.fecha).yMMMd,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),

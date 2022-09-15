@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:mis_gastos/User/bloc/user_bloc.dart';
+import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/gastos/views/form_gasto.dart';
 import 'package:mis_gastos/gastos/views/importa_csv_gastos.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
@@ -16,8 +18,7 @@ class ListaGastos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     userBloc = BlocProvider.of<UserBloc>(context);
-    userBloc.getMisGastosStream(
-        DateTime(2022, 9, 2), DateTime.now(), "Transporte");
+    // userBloc.getMisGastosStream( DateTime(2022, 9, 2), DateTime.now(), "Transporte");
     return stack(context);
   }
 
@@ -44,27 +45,34 @@ class ListaGastos extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(top: 140),
           child: StreamBuilder(
-            stream: userBloc.getMisGastos(
-                DateTime(2022, 9, 2), DateTime.now(), "Transporte"),
-            builder: (context, AsyncSnapshot snapshot) {
+            stream:
+                userBloc.getMisGastos(DateTime(2022, 9, 2), DateTime.now(), ""),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.active:
-                  print("listaGastos->streamBuilder()->Dentro de active");
-
-                  print(snapshot.data.toString());
-                  // userBloc.listaGastos(snapshot.data);
-                  // print(snapshot());
-                  break;
+                  var docs = snapshot.data!.docs;
+                  return ListView(
+                    children: [
+                      Text("""
+      -> Falta implementar el filtro por categoria.
+      -> agregar los controles para seleccionar fechas y
+           categoria y el boton de buscar
+      -> implementar opcion de exportar datos a excel
+      -> implementar opcion para borrar un gasto
+                        """),
+                      ...listaGastoCards(docs)
+                    ],
+                  );
                 case ConnectionState.done:
-                  print("Dentro de done");
-                  print(snapshot.data);
+                  // print("Dentro de done");
+                  // print(snapshot.data);
                   break;
                 case ConnectionState.none:
                   return loading();
                 case ConnectionState.waiting:
                   return loading();
               }
-              print(snapshot.data);
+              // print(snapshot.data);
               return Center(child: Text("Ya estan listos los datos"));
             },
           ),
@@ -94,6 +102,23 @@ class ListaGastos extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  List<GastoCard> listaGastoCards(docs) {
+    List<GastoCard> lista = <GastoCard>[];
+    for (var gasto in docs) {
+      DateTime fecha =
+          DateTime.parse(gasto.data()["fecha"].toDate().toString());
+      double importe = double.parse(gasto.data()["importe"].toString());
+      GastoModel gasto_model = new GastoModel(
+          concepto: gasto.data()["concepto"],
+          descripcion: gasto.data()["descripcion"],
+          fecha: fecha,
+          importe: importe,
+          categoria: gasto.data()["categoria"]);
+      lista.add(new GastoCard(gasto_model));
+    }
+    return lista;
   }
 
   goToForm(BuildContext context) {
