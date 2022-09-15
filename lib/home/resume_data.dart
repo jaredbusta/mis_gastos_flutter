@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:mis_gastos/screens/widgets/Circule_button.dart';
+import 'package:mis_gastos/utils/util.dart';
 
 // ignore: must_be_immutable
 class ResumeData extends StatelessWidget {
   String titulo;
   String dato;
-  ResumeData(this.titulo, this.dato, {Key? key}) : super(key: key);
+  var icon;
+  bool showCircleButton = false;
+  final VoidCallback onPressed;
+  ResumeData(this.titulo, this.dato,
+      {Key? key,
+      required this.icon,
+      required this.onPressed,
+      required this.showCircleButton})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,33 +23,47 @@ class ResumeData extends StatelessWidget {
 
   Card resumenCard() {
     return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.only(top: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: const FractionalOffset(1.0, 0.0),
-                  child: const Text("\$",
-                      style: TextStyle(
-                          fontSize: 20.0,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 80),
+                padding: const EdgeInsets.only(top: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      alignment: const FractionalOffset(1.0, 0.0),
+                      child: const Text("\$",
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontFamily: "Lato",
+                              color: Colors.green)),
+                    ),
+                    Text(
+                      dato,
+                      style: const TextStyle(
+                          fontSize: 35.0,
                           fontFamily: "Lato",
-                          color: Colors.green)),
+                          color: Color(0xff23c6da)),
+                    ),
+                  ],
                 ),
-                Text(
-                  dato,
-                  style: const TextStyle(
-                      fontSize: 35.0,
-                      fontFamily: "Lato",
-                      color: Color(0xff23c6da)),
-                ),
-              ],
-            ),
+              ),
+              Text(titulo),
+            ],
           ),
-          Text(titulo)
+          SizedBox(
+            width: 80,
+          ),
+          Container(
+            child: showCircleButton
+                ? CirculeButton(false, icon, 32, Util.color("#FFFFFF"),
+                    onPressed: onPressed, iconColor: Util.color("#000000"))
+                : Text(""),
+          )
         ],
       ),
     );
