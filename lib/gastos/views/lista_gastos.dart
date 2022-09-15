@@ -5,6 +5,7 @@ import 'package:mis_gastos/User/bloc/user_bloc.dart';
 import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/gastos/views/form_gasto.dart';
 import 'package:mis_gastos/gastos/views/importa_csv_gastos.dart';
+import 'package:mis_gastos/gastos/widget/gasto_card_resumen.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/screens/widgets/title_header.dart';
 import 'package:mis_gastos/utils/util.dart';
@@ -13,6 +14,7 @@ import '../../screens/gradient_back.dart';
 
 class ListaGastos extends StatelessWidget {
   late UserBloc userBloc;
+  late double total_gastos = 0;
   List<GastoCard> widgetCargas = [];
   ListaGastos({Key? key}) : super(key: key);
   @override
@@ -29,6 +31,7 @@ class ListaGastos extends StatelessWidget {
   }
 
   stack(BuildContext context) {
+    List<GastoCard> listaGastosCards;
     return Stack(
       children: [
         GradientBack(
@@ -51,6 +54,8 @@ class ListaGastos extends StatelessWidget {
               switch (snapshot.connectionState) {
                 case ConnectionState.active:
                   var docs = snapshot.data!.docs;
+                  total_gastos = 0;
+                  listaGastosCards = listaGastoCards(docs);
                   return ListView(
                     children: [
                       Text("""
@@ -60,6 +65,9 @@ class ListaGastos extends StatelessWidget {
       -> implementar opcion de exportar datos a excel
       -> implementar opcion para borrar un gasto
                         """),
+                      GastoCardResumen(
+                          total_gasto: total_gastos,
+                          cantidad_items: docs.length),
                       ...listaGastoCards(docs)
                     ],
                   );
@@ -117,6 +125,8 @@ class ListaGastos extends StatelessWidget {
           importe: importe,
           categoria: gasto.data()["categoria"]);
       lista.add(new GastoCard(gasto_model));
+
+      total_gastos += importe;
     }
     return lista;
   }

@@ -79,7 +79,6 @@ class UserBloc extends Bloc {
 
   Stream<QuerySnapshot> getMisGastos(start, end, category) =>
       _cloudFirestoreRepositoryGastos.getMisGastos(start, end, category);
-  // List getMisGastos() => _demoRepositoryGasto.getMisGastos();
 
   @override
   void dispose() {
