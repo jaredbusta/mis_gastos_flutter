@@ -90,22 +90,13 @@ class ListaGastos extends StatelessWidget {
         //   child: ListView(padding: EdgeInsets.all(20), children: widgetCargas),
         // ),
         Container(
-          alignment: Alignment(0.9, -0.6),
+          alignment: Alignment(0.9, -0.68),
           child: SizedBox(
               width: 50,
               height: 50,
               child: CirculeButton(
                   false, Icons.upload_file, 32, Util.color("#FFFFFF"),
                   onPressed: () => {goToImportaCSV(context)},
-                  iconColor: Util.color("#000000"))),
-        ),
-        Container(
-          alignment: Alignment(0.93, 0.9),
-          child: SizedBox(
-              width: 50,
-              height: 50,
-              child: CirculeButton(false, Icons.add, 32, Util.color("#FFFFFF"),
-                  onPressed: () => {goToForm(context)},
                   iconColor: Util.color("#000000"))),
         ),
       ],
@@ -133,11 +124,6 @@ class ListaGastos extends StatelessWidget {
 
   goToForm(BuildContext context) {
     showDialog(context: context, builder: (context) => FormGasto());
-
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (BuildContext context) => AddGastoScreen(image: image)));
   }
 
   goToImportaCSV(BuildContext context) {
