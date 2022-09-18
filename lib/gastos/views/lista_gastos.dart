@@ -49,7 +49,7 @@ class ListaGastos extends StatelessWidget {
           padding: const EdgeInsets.only(top: 140),
           child: StreamBuilder(
             stream:
-                userBloc.getMisGastos(DateTime(2022, 9, 2), DateTime.now(), ""),
+                userBloc.getMisGastos(DateTime(2022, 9, 1), DateTime.now(), ""),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.active:

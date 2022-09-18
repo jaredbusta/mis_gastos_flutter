@@ -61,7 +61,6 @@ class ResumeData extends StatelessWidget {
           ),
           Container(
             child: HeartBeat(
-              beatsPerMinute: 35,
               child: showCircleButton
                   ? CirculeButton(false, icon, 32, Util.color("#FFFFFF"),
                       onPressed: onPressed, iconColor: Util.color("#000000"))
