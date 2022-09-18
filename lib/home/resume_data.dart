@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:im_animations/im_animations.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/utils/util.dart';
 
@@ -59,10 +60,13 @@ class ResumeData extends StatelessWidget {
             width: 80,
           ),
           Container(
-            child: showCircleButton
-                ? CirculeButton(false, icon, 32, Util.color("#FFFFFF"),
-                    onPressed: onPressed, iconColor: Util.color("#000000"))
-                : Text(""),
+            child: HeartBeat(
+              beatsPerMinute: 35,
+              child: showCircleButton
+                  ? CirculeButton(false, icon, 32, Util.color("#FFFFFF"),
+                      onPressed: onPressed, iconColor: Util.color("#000000"))
+                  : Text(""),
+            ),
           )
         ],
       ),
