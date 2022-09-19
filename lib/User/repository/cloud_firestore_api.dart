@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mis_gastos/User/model/user_model.dart';
 
-class CloudFirestoreAPI {
+class CloudFirestoreAPIUser {
   final String USERS = "users";
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;

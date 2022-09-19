@@ -3,6 +3,7 @@ import 'package:im_animations/im_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:mis_gastos/gastos/views/form_gasto.dart';
 import 'package:mis_gastos/home/models/totales_dashboard.dart';
+import 'package:mis_gastos/ingresos/views/ingreso_form.dart';
 import 'package:mis_gastos/screens/gradient_back.dart';
 import 'resume_data.dart';
 
@@ -24,7 +25,14 @@ class AppHeader extends StatelessWidget {
         GradientBack(
           height: 250,
           title: '',
+          color1: "#D8FCFF",
+          color2: "#85F6FF",
         ),
+        Container(
+            height: 210,
+            margin: EdgeInsets.only(top: 40),
+            alignment: Alignment.bottomCenter,
+            child: Image.asset("assets/img/main_image.png")),
         Container(
             margin: EdgeInsets.only(top: 250),
             height: MediaQuery.of(context).size.height,
@@ -47,8 +55,11 @@ class AppHeader extends StatelessWidget {
           "Ingresos septiembre",
           numberFormat.format(totalesDasboard.totalIngresosMes).toString(),
           icon: Icons.attach_money_rounded,
-          onPressed: () => print("Nuevo ingreso mensual"),
-          showCircleButton: false,
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const IngresoForm()));
+          },
+          showCircleButton: true,
         ),
         ResumeData("Gastos",
             numberFormat.format(totalesDasboard.totalGastos).toString(),

@@ -5,7 +5,7 @@ import 'package:mis_gastos/User/model/user_model.dart';
 import 'package:mis_gastos/User/repository/cloud_firestore_api.dart';
 
 class CloudFirestoreRepository {
-  final _cloudFirestoreAPI = CloudFirestoreAPI();
+  final _cloudFirestoreAPI = CloudFirestoreAPIUser();
   void updateUserDataFirestore(UserModel user) =>
       _cloudFirestoreAPI.updateUserData(user);
 }

@@ -39,11 +39,16 @@ class ListaGastos extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             color1: "#CFCFCF",
             color2: "#F3F3F3"),
+
         GradientBack(
             title: "", height: 150, color1: "#F75454", color2: "#E33131"),
         Container(
-          padding: EdgeInsets.only(top: 80, left: 100, right: 10.0),
-          child: TitleHeader(title: "Mis gastos"),
+            height: 130,
+            margin: EdgeInsets.only(top: 15, left: 230),
+            child: Image.asset("assets/img/gastos.png")),
+        Container(
+          padding: EdgeInsets.only(top: 80, left: 40, right: 10.0),
+          child: TitleHeader(title: "Mis Egresos"),
         ),
         Container(
           padding: const EdgeInsets.only(top: 140),

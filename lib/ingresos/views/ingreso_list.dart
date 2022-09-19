@@ -18,7 +18,11 @@ class IngresoList extends StatelessWidget {
         color2: "#584CD1",
       ),
       Container(
-        padding: EdgeInsets.only(top: 70, left: 100),
+          height: 180,
+          margin: EdgeInsets.only(top: 10),
+          child: Image.asset("assets/img/ingreso.png")),
+      Container(
+        padding: EdgeInsets.only(top: 70, left: 140),
         child: TitleHeader(title: "Mis ingresos"),
       ),
       Container(

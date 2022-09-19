@@ -12,6 +12,8 @@ import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/gastos/repository/demo_repository_gastos.dart';
 import 'package:mis_gastos/gastos/repository/gastos_cloud_firestore_repository.dart';
 import 'package:mis_gastos/gastos/widget/gasto_card.dart';
+import 'package:mis_gastos/ingresos/model/ingreso_model.dart';
+import 'package:mis_gastos/ingresos/repository/ingreso_repository.dart';
 
 import '../repository/auth_repository.dart';
 
@@ -44,6 +46,7 @@ class UserBloc extends Bloc {
   //2. Registrar usuario en BD
   final _cloudFirestoreRepository = CloudFirestoreRepository();
   final _cloudFirestoreRepositoryGastos = GastosCloudFirestoreRepository();
+  final _ingresoRepository = IngresoRepository();
 
   final _demoRepositoryGasto = DemoRepositoryGastos();
   void updateUserDataFirestore(UserModel user) =>
@@ -79,6 +82,9 @@ class UserBloc extends Bloc {
 
   Stream<QuerySnapshot> getMisGastos(start, end, category) =>
       _cloudFirestoreRepositoryGastos.getMisGastos(start, end, category);
+
+  Future<void> nuevoIngreso(IngresoModel ingreso) =>
+      _ingresoRepository.nuevoIngreso(ingreso);
 
   @override
   void dispose() {

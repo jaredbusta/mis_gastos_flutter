@@ -1,25 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:mis_gastos/gastos/model/gasto_model.dart';
-import 'package:mis_gastos/gastos/widget/gasto_card.dart';
-import '../../User/repository/cloud_firestore_api.dart';
+import 'package:flutter/material.dart';
+import 'package:mis_gastos/User/repository/cloud_firestore_api.dart';
+import 'package:mis_gastos/ingresos/model/ingreso_model.dart';
 
-class CloudFirestoreApi {
-  final String GASTO_TABLE = "gastos"; // collection
+class CloudRepositoryIngresoApi {
+  final String INGRESOS_TABLE = "ingresos"; // collection
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> updateGastoDataFirestore(GastoModel gasto) async {
+  Future<void> nuevoIngresoFirestore(IngresoModel ingreso) async {
     // DocumentReference ref = this._db.collection(GASTO_TABLE).doc(gasto.uid);
-    DocumentReference ref = this._db.collection(GASTO_TABLE).doc();
+    DocumentReference ref = this._db.collection(INGRESOS_TABLE).doc();
     // user repository
     CloudFirestoreAPIUser userRepositoryFirestore = new CloudFirestoreAPIUser();
 
     var user = _auth.currentUser;
     if (user != null) {
       await ref.set({
-        ...gasto.toMap(),
+        ...ingreso.toMap(),
         "owner": "${userRepositoryFirestore.USERS}/${user.uid}"
       });
     } else {
@@ -32,26 +31,11 @@ class CloudFirestoreApi {
     var user = _auth.currentUser;
     final ref = this
         ._db
-        .collection(GASTO_TABLE)
+        .collection(INGRESOS_TABLE)
         .where("fecha", isGreaterThanOrEqualTo: start)
         .where("fecha", isLessThanOrEqualTo: end)
         .where("owner", isEqualTo: "users/${user!.uid}")
-        // .where("categoria", isEqualTo: category)
         .orderBy("fecha", descending: true);
-
-    if (category.toString().length > 0) {
-      print({start, end, category});
-      ref.where("categoria", isEqualTo: category);
-    }
     return ref.snapshots();
-  }
-
-  List<GastoCard> buildMyGastosCard(List<DocumentSnapshot> gastosListSnapshot) {
-    List<GastoCard> lista = <GastoCard>[];
-    gastosListSnapshot.forEach((p) {
-      print(p.data());
-    });
-
-    return lista;
   }
 }
