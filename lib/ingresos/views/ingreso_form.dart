@@ -165,7 +165,7 @@ class _IngresoFormState extends State<IngresoForm> {
                                 concepto: concepto,
                                 fecha: dateTime,
                                 importe: ingreso,
-                                observaciones: "observaciones",
+                                observaciones: observacionesController.text,
                               );
                               blocUser
                                   .nuevoIngreso(ingresoModel)

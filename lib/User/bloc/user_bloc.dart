@@ -86,6 +86,9 @@ class UserBloc extends Bloc {
   Future<void> nuevoIngreso(IngresoModel ingreso) =>
       _ingresoRepository.nuevoIngreso(ingreso);
 
+  Stream<QuerySnapshot> getMisIngresos(start, end) =>
+      _ingresoRepository.getMisIngresos(start, end);
+
   @override
   void dispose() {
     // TODO: implement dispose

@@ -26,7 +26,7 @@ class CloudRepositoryIngresoApi {
     }
   }
 
-  Stream<QuerySnapshot> getMisGastos(
+  Stream<QuerySnapshot> getMisIngresos(
       {Key? key, required start, required end, category}) {
     var user = _auth.currentUser;
     final ref = this

@@ -1,4 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:mis_gastos/User/bloc/user_bloc.dart';
+import 'package:mis_gastos/ingresos/model/ingreso_model.dart';
+import 'package:mis_gastos/ingresos/widgets/ingreso_card_resumen.dart';
 import 'package:mis_gastos/screens/gradient_back.dart';
 
 import 'package:mis_gastos/screens/widgets/title_header.dart';
@@ -6,10 +12,14 @@ import 'package:mis_gastos/screens/widgets/title_header.dart';
 import '../widgets/ingreso_card.dart';
 
 class IngresoList extends StatelessWidget {
-  const IngresoList({Key? key}) : super(key: key);
-
+  late UserBloc userBloc;
+  late double total_ingresos = 0;
+  IngresoList({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    userBloc = BlocProvider.of<UserBloc>(context);
+    userBloc.getMisGastos(DateTime(2022, 9, 1), DateTime.now(), "");
+    List<IngresoCard> listaIngresosCards;
     return Stack(children: [
       GradientBack(
         height: 150,
@@ -27,30 +37,65 @@ class IngresoList extends StatelessWidget {
       ),
       Container(
         padding: const EdgeInsets.only(top: 150),
-        child: ListView(
-          children: [
-            IngresoCard("17 ene 22", "nomina", "8,036.00", 2),
-            IngresoCard("13 ene 22", "nomina", "8,036.00", 3),
-            IngresoCard("15 feb 22", "nomina", "8,036.00", 4),
-            IngresoCard("28 feb 22", "nomina", "8,036.00", 5),
-            IngresoCard("18 mar 22", "nomina", "8,036.00", 5),
-            IngresoCard("05 abr 22", "nomina", "8,036.00", 5),
-            IngresoCard("13 abr 22", "nomina", "8,036.00", 5),
-            IngresoCard("29 abr 22", "nomina", "8,036.00", 5),
-            IngresoCard("13 may 22", "nomina", "8,036.00", 5),
-            IngresoCard("31 may 22", "nomina", "8,036.00", 5),
-            IngresoCard("15 jun 22", "nomina", "8,036.00", 5),
-            IngresoCard("30 jun 22", "nomina", "8,036.00", 5),
-            IngresoCard("30 jun 22", "recuperacion contraseña jefa del isaac",
-                "500.00", 5),
-            IngresoCard("15 jul 22", "nomina", "8,031.00", 5),
-            IngresoCard("30 jul 22", "nomina", "8,036.00", 5),
-            IngresoCard("15 ago 22", "nomina", "8,036.00", 5),
-            IngresoCard("31 ago 22", "nomina", "8,786.00", 5),
-            IngresoCard("51 sep 22", "nomina", "8,786.00", 5),
-          ],
+        child: StreamBuilder(
+          stream: userBloc.getMisIngresos(DateTime(2022, 1, 1), DateTime.now()),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+                var docs = snapshot.data!.docs;
+                total_ingresos = 0;
+                listaIngresosCards = getListaIngresosCards(docs);
+                return ListView(
+                  children: [
+                    Text("""
+      -> implementar opcion de exportar datos a excel
+      -> implementar opcion para borrar un ingreso
+                        """),
+                    IngresoCardResumen(
+                        total_gasto: total_ingresos,
+                        cantidad_items: docs.length),
+                    ...listaIngresosCards
+                  ],
+                );
+              case ConnectionState.done:
+                break;
+              case ConnectionState.none:
+                return loading();
+              case ConnectionState.waiting:
+                return loading();
+            }
+            // print(snapshot.data);
+            return Center(child: Text("Ya estan listos los datos"));
+          },
         ),
       )
     ]);
+  }
+
+  List<IngresoCard> getListaIngresosCards(docs) {
+    List<IngresoCard> lista = <IngresoCard>[];
+    for (var ingreso in docs) {
+      DateTime fecha =
+          DateTime.parse(ingreso.data()["fecha"].toDate().toString());
+      double importe = double.parse(ingreso.data()["importe"].toString());
+      //  ingreso.data()["concepto"]
+      // this.fecha, this.concepto, this.cantidad, this.id
+      IngresoModel model = IngresoModel(
+          concepto: ingreso.data()["concepto"],
+          fecha: fecha,
+          importe: importe,
+          observaciones: ingreso.data()["observaciones"]);
+      IngresoCard ingreso_card = IngresoCard(model: model);
+      lista.add(ingreso_card);
+
+      total_ingresos += importe;
+    }
+    return lista;
+  }
+
+  Widget loading() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 }

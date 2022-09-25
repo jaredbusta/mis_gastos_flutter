@@ -6,8 +6,8 @@ class IngresoRepository {
   final _cloudFirestoreApi = CloudRepositoryIngresoApi();
   Future<void> nuevoIngreso(IngresoModel ingreso) =>
       _cloudFirestoreApi.nuevoIngresoFirestore(ingreso);
-  Stream<QuerySnapshot> getMisGastos(start, end, category) => _cloudFirestoreApi
-      .getMisGastos(end: end, start: start, category: category);
+  Stream<QuerySnapshot> getMisIngresos(start, end) =>
+      _cloudFirestoreApi.getMisIngresos(end: end, start: start);
 
   // List<GastoCard> buildMyGastosCard(List<DocumentSnapshot> gastosSnapshot) =>
   //     _cloudFirestoreApi.buildMyGastosCard(gastosSnapshot);
