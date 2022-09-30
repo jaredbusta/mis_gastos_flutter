@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mis_gastos/User/bloc/user_bloc.dart';
 import 'package:mis_gastos/gastos/model/gasto_model.dart';
 import 'package:mis_gastos/gastos/views/form_gasto.dart';
@@ -12,11 +13,27 @@ import 'package:mis_gastos/utils/util.dart';
 import '../widget/gasto_card.dart';
 import '../../screens/gradient_back.dart';
 
-class ListaGastos extends StatelessWidget {
+class ListaGastos extends StatefulWidget {
+  ListaGastos({Key? key}) : super(key: key);
+
+  @override
+  State<ListaGastos> createState() => _ListaGastosState();
+}
+
+class _ListaGastosState extends State<ListaGastos> {
   late UserBloc userBloc;
   late double total_gastos = 0;
-  List<GastoCard> widgetCargas = [];
-  ListaGastos({Key? key}) : super(key: key);
+  late DateTime start;
+  late DateTime end;
+
+  @override
+  void initState() {
+    super.initState();
+    var now = DateTime.now();
+    start = DateTime(now.year, now.month, 1);
+    end = DateTime(now.year, now.month + 1, 0, 23, 59, 59, 999);
+  }
+
   @override
   Widget build(BuildContext context) {
     userBloc = BlocProvider.of<UserBloc>(context);
@@ -30,6 +47,13 @@ class ListaGastos extends StatelessWidget {
     );
   }
 
+  Future<DateTime?> pickDate() => showDatePicker(
+      context: context,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2100));
+
   stack(BuildContext context) {
     List<GastoCard> listaGastosCards;
     return Stack(
@@ -39,7 +63,6 @@ class ListaGastos extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             color1: "#CFCFCF",
             color2: "#F3F3F3"),
-
         GradientBack(
             title: "", height: 150, color1: "#F75454", color2: "#E33131"),
         Container(
@@ -47,14 +70,14 @@ class ListaGastos extends StatelessWidget {
             margin: EdgeInsets.only(top: 15, left: 230),
             child: Image.asset("assets/img/gastos.png")),
         Container(
-          padding: EdgeInsets.only(top: 80, left: 40, right: 10.0),
+          padding: EdgeInsets.only(top: 70, left: 40, right: 10.0),
           child: TitleHeader(title: "Mis Egresos"),
         ),
+        searchForm(),
         Container(
           padding: const EdgeInsets.only(top: 140),
           child: StreamBuilder(
-            stream:
-                userBloc.getMisGastos(DateTime(2022, 9, 1), DateTime.now(), ""),
+            stream: userBloc.getMisGastos(start, end, "Transporte"),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.active:
@@ -64,7 +87,7 @@ class ListaGastos extends StatelessWidget {
                   return ListView(
                     children: [
                       Text("""
-      -> Falta implementar el filtro por categoria.
+      -> Falta implementar el filtro por categoría.
       -> agregar los controles para seleccionar fechas y
            categoria y el boton de buscar
       -> implementar opcion de exportar datos a excel
@@ -77,23 +100,16 @@ class ListaGastos extends StatelessWidget {
                     ],
                   );
                 case ConnectionState.done:
-                  // print("Dentro de done");
-                  // print(snapshot.data);
                   break;
                 case ConnectionState.none:
                   return loading();
                 case ConnectionState.waiting:
                   return loading();
               }
-              // print(snapshot.data);
               return Center(child: Text("Ya estan listos los datos"));
             },
           ),
         ),
-        // Container(
-        //   padding: const EdgeInsets.only(top: 140),
-        //   child: ListView(padding: EdgeInsets.all(20), children: widgetCargas),
-        // ),
         Container(
           alignment: Alignment(0.9, -0.68),
           child: SizedBox(
@@ -127,11 +143,71 @@ class ListaGastos extends StatelessWidget {
     return lista;
   }
 
+  Widget searchForm() {
+    return Container(
+      margin: EdgeInsets.only(top: 110),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              final date = await pickDate();
+              if (date == null) return;
+              setState(() {
+                start = date;
+              });
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 0, left: 20, bottom: 20, right: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Text(
+                Jiffy(start).MMMEd,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black87),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () async {
+              final date = await pickDate();
+              if (date == null) return;
+              setState(() {
+                end = date;
+              });
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 0, bottom: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Text(
+                Jiffy(end).MMMEd,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black87),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   goToForm(BuildContext context) {
     showDialog(context: context, builder: (context) => FormGasto());
   }
 
   goToImportaCSV(BuildContext context) {
+    // setState(() {
+    //   start = DateTime(2022, 8, 1);
+    //   end = DateTime(2022, 8, 31, 23, 59, 59);
+    // });
     Navigator.push(
         context,
         MaterialPageRoute(
