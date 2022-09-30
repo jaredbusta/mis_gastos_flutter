@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
@@ -10,7 +9,6 @@ import 'package:mis_gastos/User/model/user_model.dart';
 import 'package:mis_gastos/screens/widgets/Circule_button.dart';
 import 'package:mis_gastos/screens/widgets/button_color.dart';
 import 'package:mis_gastos/utils/util.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'user_info_card.dart';
 
@@ -25,7 +23,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   late TextEditingController qrTextController = TextEditingController();
   final key = GlobalKey<FormState>();
   late UserModel user_model;
-  late var digest;
+  var digest = "";
 
   @override
   void dispose() {
@@ -38,6 +36,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     Stream<User?> streamFirebase = FirebaseAuth.instance.authStateChanges();
     streamFirebase.listen((user) {
       print("${user?.uid}");
+      // crypt();
       setState(() {
         user_model = UserModel(
             nombre: user?.displayName,
@@ -48,19 +47,22 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     });
   }
 
+  // void crypt() {
+  //   var key = utf8.encode('jared');
+  //   var string = "este es un texto encriptado con [salt:jared]";
+  //   var bytes = utf8.encode(string);
+  //   var hmacSha256 = Hmac(sha256, key); // HMAC-SHA256
+  //   digest = hmacSha256.convert(bytes);
+  //   var b64 = base64.encode(digest.bytes);
+  //   print(b64);
+  //   setState(() {
+  //     qrTextController.text = "$digest";
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     blocUser = BlocProvider.of(context);
-    var key = utf8.encode('jared');
-    var string = "este es un texto encriptado con [salt:jared]";
-    var bytes = utf8.encode(string);
-    var hmacSha256 = Hmac(sha256, key); // HMAC-SHA256
-    digest = hmacSha256.convert(bytes);
-    var b64 = base64.encode(digest.bytes);
-    print(b64);
-
-    // print("HMAC digest as bytes: ${digest.bytes}");
-    // print("HMAC digest as hex string: $digest");
 
     return StreamBuilder(
         stream: blocUser.authStatus,
@@ -103,9 +105,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           child: TextFormField(
             controller: qrTextController,
             decoration: InputDecoration(labelText: "texto a encriptar"),
-            onSaved: (val) {
-              // qrTextController = val!;
-            },
+            onSaved: (val) {},
             validator: (val) {
               if (val!.isEmpty) {
                 return "El concepto es requerido";
@@ -126,9 +126,12 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               if (key.currentState!.validate()) {
                 key.currentState!.save();
                 print(qrTextController.text);
+
                 var res =
                     Util.encode(text: qrTextController.text, seed: "jared");
-                digest = res;
+                setState(() {
+                  digest = res;
+                });
               }
             },
             textColor: "#000000"),
@@ -186,19 +189,13 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   height: 20,
                 ),
                 QrImage(
-                  data: "$digest",
-                  version: QrVersions.auto,
-                  size: 320,
-                  gapless: false,
-                  embeddedImage: AssetImage('assets/img/la_siesta.jpg'),
-                  embeddedImageStyle: QrEmbeddedImageStyle(
-                    size: Size(80, 80),
-                  ),
-                ),
+                    data: qrTextController.text,
+                    version: QrVersions.auto,
+                    size: 320,
+                    gapless: false),
                 SizedBox(
                   height: 20,
                 ),
-
                 SizedBox(
                   height: 20,
                 ),

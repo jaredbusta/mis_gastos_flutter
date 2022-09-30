@@ -15,7 +15,8 @@ class Util {
     var hmacSha256 = Hmac(sha256, _key); // HMAC-SHA256
     digest = hmacSha256.convert(bytes);
     var b64 = base64.encode(digest.bytes);
-    return "$digest";
+    // return "$digest";
+    return text;
     // return json.encode({b64: b64, digest: "$digest"});
   }
 }
