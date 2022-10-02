@@ -30,7 +30,7 @@ class CloudFirestoreApi {
   Stream<QuerySnapshot> getMisGastos(
       {Key? key, required start, required end, category}) {
     var user = _auth.currentUser;
-    final ref = this
+    var ref = this
         ._db
         .collection(GASTO_TABLE)
         .where("fecha", isGreaterThanOrEqualTo: start)
@@ -41,7 +41,8 @@ class CloudFirestoreApi {
 
     if (category.toString().length > 0) {
       print({start, end, category});
-      ref.where("categoria", isEqualTo: category);
+      // print({category});
+      ref.where("categoria", isEqualTo: "$category");
     }
     return ref.snapshots();
   }

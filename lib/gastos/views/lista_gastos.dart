@@ -176,7 +176,9 @@ class _ListaGastosState extends State<ListaGastos> {
               final date = await pickDate();
               if (date == null) return;
               setState(() {
-                end = date;
+                var newEnd =
+                    DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+                end = newEnd;
               });
             },
             child: Container(
